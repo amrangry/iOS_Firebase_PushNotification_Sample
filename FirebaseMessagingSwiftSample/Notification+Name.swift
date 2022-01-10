@@ -9,4 +9,5 @@ import Foundation
 
 extension Notification.Name {
     static let fcmToken = Notification.Name("FCMToken")
+    static let apnToken = Notification.Name("apnToken")
 }
