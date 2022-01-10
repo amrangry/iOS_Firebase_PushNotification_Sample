@@ -13,7 +13,30 @@ class ViewController: UIViewController {
     
     @IBOutlet weak var deviceTokenLabel: UILabel?
     @IBOutlet weak var fcmTokenLabel: UILabel?
+        
+    deinit {
+        NotificationCenter.default.removeObserver(self, name: .fcmToken, object: nil)
+    }
     
+    override func viewDidLoad() {
+        super.viewDidLoad()
+        
+        NotificationCenter.default.addObserver(
+            self,
+            selector: #selector(displayFCMToken(notification:)),
+            name: .fcmToken,
+            object: nil
+        )
+    }
+    
+    @objc
+    func displayFCMToken(notification: NSNotification) {
+        guard let userInfo = notification.userInfo else { return }
+        if let fcmToken = userInfo["token"] as? String {
+            let text = "Received FCM token: \(fcmToken)"
+            setFCMToken(text)
+        }
+    }
     
     @IBAction func showDeviceTokenButtonPressed(_ sender: Any) {
         
