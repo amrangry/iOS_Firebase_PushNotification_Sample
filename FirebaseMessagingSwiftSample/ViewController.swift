@@ -10,7 +10,6 @@ import Firebase
 @objc(ViewController)
 class ViewController: UIViewController {
     
-    
     @IBOutlet weak var deviceTokenLabel: UILabel?
     @IBOutlet weak var fcmTokenLabel: UILabel?
         
@@ -37,31 +36,6 @@ class ViewController: UIViewController {
         )
     }
     
-    @objc
-    func displayFCMToken(notification: NSNotification) {
-        guard let userInfo = notification.userInfo else { return }
-        if let fcmToken = userInfo["token"] as? String {
-            let text = "Received FCM token: \(fcmToken)"
-            setFCMToken(text)
-        }
-    }
-    
-    @IBAction func showDeviceTokenButtonPressed(_ sender: Any) {
-        
-    }
-    
-    @IBAction func shareDeviceTokenButtonPressed(_ sender: Any) {
-        
-    }
-    
-    @IBAction func showFCMTokenButtonPressed(_ sender: Any) {
-        
-    }
-    
-    @IBAction func shareFCMDeviceTokenButtonPressed(_ sender: Any) {
-        
-    }
-    
     @IBAction func handleLogTokenTouch(_ sender: UIButton) {
         let token = Messaging.messaging().fcmToken
         self.setFCMToken("Logged FCM token: \(token ?? "")")
@@ -73,6 +47,9 @@ class ViewController: UIViewController {
                 value = "Error fetching remote FCM registration token: \(error)"
             } else if let token = token {
                 value = "Remote FCM registration token: \(token)"
+                let standard = UserDefaults.standard
+                standard.set(value, forKey: "FCMToken")
+                standard.synchronize()
             }
             self.setFCMToken(value)
         }
@@ -84,16 +61,67 @@ class ViewController: UIViewController {
         }
     }
     
+}
+
+
+extension ViewController {
+    @objc
+    func displayDeviceToken(notification: NSNotification) {
+        guard let userInfo = notification.userInfo else { return }
+        if let apnToken = userInfo["token"] as? String {
+            let text = "Received apn token:\n\(apnToken)"
+            setDeviceTokenToken(text)
+        }
+    }
+    
+    @objc
+    func displayFCMToken(notification: NSNotification) {
+        guard let userInfo = notification.userInfo else { return }
+        if let fcmToken = userInfo["token"] as? String {
+            let text = "Received FCM token:\n\(fcmToken)"
+            setFCMToken(text)
+        }
+    }
+    
+    @IBAction func showDeviceTokenButtonPressed(_ sender: Any) {
+        let standard = UserDefaults.standard
+        let value = standard.string(forKey: "DeviceToken")
+        setDeviceTokenToken(value ?? "N/A")
+    }
+    
+    @IBAction func shareDeviceTokenButtonPressed(_ sender: Any) {
+        let standard = UserDefaults.standard
+        let value = standard.string(forKey: "DeviceToken")
+        share(content: "DeviceToken:\n\(value ?? "N/A")")
+    }
+    
+    @IBAction func showFCMTokenButtonPressed(_ sender: Any) {
+        let standard = UserDefaults.standard
+        let value = standard.string(forKey: "FCMToken")
+        setFCMToken(value ?? "N/A")
+    }
+    
+    @IBAction func shareFCMDeviceTokenButtonPressed(_ sender: Any) {
+        let standard = UserDefaults.standard
+        let value = standard.string(forKey: "FCMToken")
+        share(content: "FCMToken:\n\(value ?? "N/A")")
+    }
+    
     func setFCMToken(_ token: String) {
         DispatchQueue.main.async {
             self.fcmTokenLabel?.text = token
         }
     }
     
-    func setDeviceToken(_ token: String) {
+    func setDeviceTokenToken(_ token: String) {
         DispatchQueue.main.async {
             self.deviceTokenLabel?.text = token
         }
+    }
+    
+    func share(content: String) {
+        let ac = UIActivityViewController(activityItems: [content], applicationActivities: nil)
+        present(ac, animated: true, completion: nil)
     }
     
 }
