@@ -15,11 +15,19 @@ class ViewController: UIViewController {
     @IBOutlet weak var fcmTokenLabel: UILabel?
         
     deinit {
+        NotificationCenter.default.removeObserver(self, name: .apnToken, object: nil)
         NotificationCenter.default.removeObserver(self, name: .fcmToken, object: nil)
     }
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        
+        NotificationCenter.default.addObserver(
+            self,
+            selector: #selector(displayDeviceToken(notification:)),
+            name: .apnToken,
+            object: nil
+        )
         
         NotificationCenter.default.addObserver(
             self,
