@@ -43,6 +43,7 @@ class ViewController: UIViewController {
     }
     
     @IBAction func shareDeviceTokenButtonPressed(_ sender: Any) {
+        
     }
     
     @IBAction func showFCMTokenButtonPressed(_ sender: Any) {
@@ -50,53 +51,41 @@ class ViewController: UIViewController {
     }
     
     @IBAction func shareFCMDeviceTokenButtonPressed(_ sender: Any) {
+        
     }
     
+    @IBAction func handleLogTokenTouch(_ sender: UIButton) {
+        let token = Messaging.messaging().fcmToken
+        self.setFCMToken("Logged FCM token: \(token ?? "")")
+        
+        Messaging.messaging().token { [weak self] token, error in
+            guard let self = self else { return }
+            var value = ""
+            if let error = error {
+                value = "Error fetching remote FCM registration token: \(error)"
+            } else if let token = token {
+                value = "Remote FCM registration token: \(token)"
+            }
+            self.setFCMToken(value)
+        }
+    }
     
+    @IBAction func handleSubscribeTouch(_ sender: UIButton) {
+        Messaging.messaging().subscribe(toTopic: "weather") { error in
+            print("Subscribed to weather topic")
+        }
+    }
     
-  @IBOutlet var fcmTokenMessage: UILabel!
-  @IBOutlet var remoteFCMTokenMessage: UILabel!
-
-  override func viewDidLoad() {
-    NotificationCenter.default.addObserver(
-      self,
-      selector: #selector(displayFCMToken(notification:)),
-      name: Notification.Name("FCMToken"),
-      object: nil
-    )
-  }
-
-  @IBAction func handleLogTokenTouch(_ sender: UIButton) {
-    // [START log_fcm_reg_token]
-    let token = Messaging.messaging().fcmToken
-    print("FCM token: \(token ?? "")")
-    // [END log_fcm_reg_token]
-    fcmTokenMessage.text = "Logged FCM token: \(token ?? "")"
-
-    // [START log_iid_reg_token]
-    Messaging.messaging().token { token, error in
-      if let error = error {
-        print("Error fetching remote FCM registration token: \(error)")
-      } else if let token = token {
-        print("Remote instance ID token: \(token)")
-        self.remoteFCMTokenMessage.text = "Remote FCM registration token: \(token)"
-      }
+    func setFCMToken(_ token: String) {
+        DispatchQueue.main.async {
+            self.fcmTokenLabel?.text = token
+        }
     }
-    // [END log_iid_reg_token]
-  }
-
-  @IBAction func handleSubscribeTouch(_ sender: UIButton) {
-    // [START subscribe_topic]
-    Messaging.messaging().subscribe(toTopic: "weather") { error in
-      print("Subscribed to weather topic")
+    
+    func setDeviceToken(_ token: String) {
+        DispatchQueue.main.async {
+            self.deviceTokenLabel?.text = token
+        }
     }
-    // [END subscribe_topic]
-  }
-
-  @objc func displayFCMToken(notification: NSNotification) {
-    guard let userInfo = notification.userInfo else { return }
-    if let fcmToken = userInfo["token"] as? String {
-      fcmTokenMessage.text = "Received FCM token: \(fcmToken)"
-    }
-  }
+    
 }
