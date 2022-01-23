@@ -139,6 +139,8 @@ extension AppDelegate: UNUserNotificationCenterDelegate {
         // Print full message.
         print(userInfo)
         
+        process(notification)
+        //completionHandler([[.banner, .sound]])
         // Change this to your preferred presentation option
         completionHandler([[.alert, .sound]])
     }
@@ -160,7 +162,7 @@ extension AppDelegate: UNUserNotificationCenterDelegate {
         
         // Print full message.
         print(userInfo)
-        
+        process(response.notification)
         completionHandler()
     }
 }
@@ -182,4 +184,19 @@ extension AppDelegate: MessagingDelegate {
         // Note: This callback is fired at each app startup and whenever a new token is generated.
     }
     
+}
+
+extension AppDelegate {
+    private func process(_ notification: UNNotification) {
+      let userInfo = notification.request.content.userInfo
+      UIApplication.shared.applicationIconBadgeNumber = 0
+      if let newsTitle = userInfo["newsTitle"] as? String,
+        let newsBody = userInfo["newsBody"] as? String {
+//        let newsItem = NewsItem(title: newsTitle, body: newsBody, date: Date())
+//        NewsModel.shared.add([newsItem])
+        Analytics.logEvent("NEWS_ITEM_PROCESSED", parameters: nil)
+      }
+      Messaging.messaging().appDidReceiveMessage(userInfo)
+      Analytics.logEvent("NOTIFICATION_PROCESSED", parameters: nil)
+    }
 }
