@@ -140,9 +140,16 @@ extension AppDelegate: UNUserNotificationCenterDelegate {
         print(userInfo)
         
         process(notification)
-        //completionHandler([[.banner, .sound]])
         // Change this to your preferred presentation option
-        completionHandler([[.alert, .sound]])
+        //completionHandler([[.alert, .sound]])
+        var optionsSet: UNNotificationPresentationOptions = [.badge, .sound]
+        if #available(iOS 14.0, *) {
+            optionsSet.insert(.list)
+            optionsSet.insert(.banner)
+        } else if #available(iOS 10.0, *) {
+            optionsSet.insert(.alert)
+        }
+        completionHandler([optionsSet])
     }
     
     func userNotificationCenter(_ center: UNUserNotificationCenter,
