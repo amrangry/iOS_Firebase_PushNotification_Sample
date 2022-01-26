@@ -21,7 +21,6 @@
 		C534E6D6278CA89300010C0B /* FirebaseMessaging in Frameworks */ = {isa = PBXBuildFile; productRef = C534E6D5278CA89300010C0B /* FirebaseMessaging */; };
 		C534E6D8278CA89300010C0B /* FirebasePerformance in Frameworks */ = {isa = PBXBuildFile; productRef = C534E6D7278CA89300010C0B /* FirebasePerformance */; };
 		C534E6DA278CA89300010C0B /* FirebaseRemoteConfig in Frameworks */ = {isa = PBXBuildFile; productRef = C534E6D9278CA89300010C0B /* FirebaseRemoteConfig */; };
-		C5CB4585278CAF5400521130 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = C5CB4584278CAF5400521130 /* GoogleService-Info.plist */; };
 		C5CB4587278CCC0300521130 /* Notification+Name.swift in Sources */ = {isa = PBXBuildFile; fileRef = C5CB4586278CCC0300521130 /* Notification+Name.swift */; };
 /* End PBXBuildFile section */
 
@@ -34,7 +33,6 @@
 		C534E6C0278CA6FF00010C0B /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		C534E6C2278CA6FF00010C0B /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		C534E6DB278CA8B700010C0B /* FirebaseMessagingSwiftSample.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = FirebaseMessagingSwiftSample.entitlements; sourceTree = "<group>"; };
-		C5CB4584278CAF5400521130 /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 		C5CB4586278CCC0300521130 /* Notification+Name.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Notification+Name.swift"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -84,7 +82,6 @@
 				C5CB4586278CCC0300521130 /* Notification+Name.swift */,
 				C534E6BD278CA6FF00010C0B /* Assets.xcassets */,
 				C534E6BF278CA6FF00010C0B /* LaunchScreen.storyboard */,
-				C5CB4584278CAF5400521130 /* GoogleService-Info.plist */,
 				C534E6C2278CA6FF00010C0B /* Info.plist */,
 			);
 			path = FirebaseMessagingSwiftSample;
@@ -163,7 +160,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				C534E6C1278CA6FF00010C0B /* LaunchScreen.storyboard in Resources */,
-				C5CB4585278CAF5400521130 /* GoogleService-Info.plist in Resources */,
 				C534E6BE278CA6FF00010C0B /* Assets.xcassets in Resources */,
 				C534E6BC278CA6FE00010C0B /* Main.storyboard in Resources */,
 			);
