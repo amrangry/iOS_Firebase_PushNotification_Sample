@@ -17,7 +17,7 @@ enum NotificationEnumLevel: String {
     }
 }
 
-enum NotificationPermissionStatus: String, Displayable {
+enum NotificationPermissionStatus: String {
     case denied // The application is not authorized to post user notifications.
     case notDetermined // The user has not yet made a choice regarding whether the application may post user notifications.
     case authorized /* The application is authorized to post user notifications. */
@@ -76,31 +76,14 @@ class PushNotificationManager: NSObject {
         
     }
     
-    /// syncNotificationSettings with Server & save UserNotificationSettings according to the result
-    /// - Parameter settings: UserNotificationSettings
-    func syncNotificationSettingsWithServer(_ settings: UserNotificationSettings?) {
-        guard let parameters = settings?.serialize() else { return }
-        Debugger().printOut("PushNotification:", parameters, context: .debug)
-        DataProvider().syncNotificationSettings(parameters, completion: { response in
-            switch response {
-            case .success(let value):
-                guard let value = value as? APIMessage, let message = value.message else { return }
-                Debugger().printOut(message, context: .print)
-                settings?.save()
-            case .failure(let error):
-                Debugger().printOut(error, context: .technical)
-                UserNotificationSettings.delete()
-            }
-        })
-    }
-    
     /// getting Notification permission status
     /// - Returns: NotificationPermissionStatus
+    @available(iOS 13.0.0, *)
     func notificationSettingsPermission() async -> NotificationPermissionStatus {
         // Request Notification Settings
         let userNotification = UNUserNotificationCenter.current()
         let notificationSettings = await userNotification.notificationSettings()
-        Debugger().printOut("Notification settings: \(notificationSettings)", context: .none)
+        debugPrint("Notification settings: \(notificationSettings)")
         switch notificationSettings.authorizationStatus {
         case .denied: // The application is not authorized to post user notifications.
             return .denied
@@ -120,7 +103,7 @@ class PushNotificationManager: NSObject {
     func getNotificationSettings(completion: @escaping ((NotificationPermissionStatus) -> Void)) {
         let userNotification = UNUserNotificationCenter.current()
         userNotification.getNotificationSettings { notificationSettings in
-            Debugger().printOut("Notification settings: \(notificationSettings)", context: .none)
+            debugPrint("Notification settings: \(notificationSettings)")
             switch notificationSettings.authorizationStatus {
             case .denied: // The application is not authorized to post user notifications.
                 completion(.denied)
@@ -152,7 +135,7 @@ class PushNotificationManager: NSObject {
             UNUserNotificationCenter.current().requestAuthorization( options: authOptions, completionHandler: { [unowned self] granted, error in
                 //Enable or disable features based on authorization.
                 if let error = error {
-                    Debugger().printOut(error, context: .technical)
+                    debugPrint(error)
                     return
                 }
                 guard granted else { /* Don't Allow */ return }
@@ -287,37 +270,8 @@ extension PushNotificationManager: MessagingDelegate {
     ///   - messaging: FIRMessaging
     ///   - fcmToken: String
     func messaging(_ messaging: Messaging, didReceiveRegistrationToken fcmToken: String?) {
-        fcmTokenReceived(fcmToken)
-    }
-    
-    ///Remote FCM registration token
-    ///You can use this method at any time to access the token instead of storing it.
-    func getFCMToken(_ completion: @escaping ResultResponse<String>) {
-        Messaging.messaging().token { token, error in
-            if let error = error {
-                let errorMessage = "Error fetching FCM registration token: \(error)"
-                let customError = ApplicationError.custom(NotificationEnumLevel.fcm.value, 103, [NSLocalizedDescriptionKey: errorMessage])
-                completion(.failure(customError))
-            } else if let fcmToken = token {
-                self.fcmTokenReceived(fcmToken)
-                completion(.success(fcmToken))
-            }
-        }
-    }
-    
-    func fcmTokenReceived(_ fcmToken: String?) {
-        guard let value = fcmToken?.trimIfEmpty() else { return }
-        let dataDict: [String: String] = [Self.tokenKey: value]
-        NotificationCenter.default.post(name: .firebaseMessagingTokenReceived, object: nil, userInfo: dataDict)
-        var userNotificationSettings = UserNotificationSettings.shared()
-        userNotificationSettings.fcmToken = value
-        userNotificationSettings.save()
-        //        let cached = userNotificationSettings.fcmToken
-        //        if value != cached {
-        //            userNotificationSettings.fcmToken = value
-        //            syncNotificationSettingsWithServer(userNotificationSettings)
-        //            Debugger().printOut("FCM deviceToken: \(value)", context: .debug)
-        //        }
+        //FCM token
+        debugPrint("FCM Token: \(fcmToken ?? "N/A")")
     }
     
 }
@@ -330,7 +284,6 @@ extension PushNotificationManager {
     /// this callback will not be fired till the user taps on the notification launching the application.
     /// - Parameter userInfo: [AnyHashable: Any]
     func didReceive(remoteNotification userInfo: [AnyHashable: Any]) {
-        Debugger().printOut("delete: remoteNotification invoked", context: .debug)
         proceedWithReceivedNotification(apsMessage: userInfo)
     }
     
@@ -343,14 +296,13 @@ extension PushNotificationManager {
     func didReceive( remoteNotification userInfo: [AnyHashable: Any],
                      fetchCompletionHandler completionHandler: @escaping (UIBackgroundFetchResult)
                      -> Void) {
-        Debugger().printOut("delete: remoteNotification fetchCompletionHandler invoked", context: .debug)
         proceedWithReceivedNotification(apsMessage: userInfo)
         completionHandler(UIBackgroundFetchResult.newData)
     }
     
     func didFailToRegister( forRemoteNotificationsWithError error: Error) {
         let value = "Unable to register for remote notifications: \(error.localizedDescription)"
-        Debugger().printOut(value, context: .error)
+        debugPrint(value)
     }
     
     // This function is added here only for debugging purposes, and can be removed if swizzling is enabled.
@@ -364,21 +316,16 @@ extension PushNotificationManager {
             return String(format: "%02.2hhx", data)
         }
         let value = tokenParts.joined()
-        //Debugger().printOut("apn deviceToken: \(value)", context: .debug)
-        let dataDict: [String: String] = [Self.tokenKey: value]
-        NotificationCenter.default.post(name: .apnMessagingTokenReceived, object: nil, userInfo: dataDict)
-        var userNotificationSettings = UserNotificationSettings.shared()
-        userNotificationSettings.apnToken = value
-        userNotificationSettings.save()
-        getFCMToken { _ in
-            self.syncNotificationSettingsWithServer(userNotificationSettings)
+        print(value)
+        Messaging.messaging().token { token, error in
+            if let error = error {
+                let errorMessage = "Error fetching FCM registration token: \(error)"
+                debugPrint(errorMessage)
+            } else if let fcmToken = token {
+                //TODo you share token with server
+                print(fcmToken)
+            }
         }
-        //        let cached = userNotificationSettings.apnToken
-        //        if value != cached {
-        //            userNotificationSettings.apnToken = value
-        //
-        //            Debugger().printOut("apn deviceToken: \(value)", context: .debug)
-        //        }
     }
     
 }
