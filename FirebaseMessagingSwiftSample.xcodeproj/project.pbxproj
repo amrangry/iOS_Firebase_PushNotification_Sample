@@ -21,6 +21,11 @@
 		C534E6D6278CA89300010C0B /* FirebaseMessaging in Frameworks */ = {isa = PBXBuildFile; productRef = C534E6D5278CA89300010C0B /* FirebaseMessaging */; };
 		C534E6D8278CA89300010C0B /* FirebasePerformance in Frameworks */ = {isa = PBXBuildFile; productRef = C534E6D7278CA89300010C0B /* FirebasePerformance */; };
 		C534E6DA278CA89300010C0B /* FirebaseRemoteConfig in Frameworks */ = {isa = PBXBuildFile; productRef = C534E6D9278CA89300010C0B /* FirebaseRemoteConfig */; };
+		C57DAB6027A13F3F002D32F4 /* UIViewController+NotificationCenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = C57DAB5B27A13F3F002D32F4 /* UIViewController+NotificationCenter.swift */; };
+		C57DAB6227A13F3F002D32F4 /* NotificationService.swift in Sources */ = {isa = PBXBuildFile; fileRef = C57DAB5D27A13F3F002D32F4 /* NotificationService.swift */; };
+		C57DAB6327A13F3F002D32F4 /* PushNotificationManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = C57DAB5E27A13F3F002D32F4 /* PushNotificationManager.swift */; };
+		C57DAB6427A13F3F002D32F4 /* NotificationMessage.swift in Sources */ = {isa = PBXBuildFile; fileRef = C57DAB5F27A13F3F002D32F4 /* NotificationMessage.swift */; };
+		C57DAB6627A14418002D32F4 /*  Notification+Name.swift in Sources */ = {isa = PBXBuildFile; fileRef = C57DAB6527A14418002D32F4 /*  Notification+Name.swift */; };
 		C5CB4587278CCC0300521130 /* Notification+Name.swift in Sources */ = {isa = PBXBuildFile; fileRef = C5CB4586278CCC0300521130 /* Notification+Name.swift */; };
 /* End PBXBuildFile section */
 
@@ -33,6 +38,11 @@
 		C534E6C0278CA6FF00010C0B /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		C534E6C2278CA6FF00010C0B /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		C534E6DB278CA8B700010C0B /* FirebaseMessagingSwiftSample.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = FirebaseMessagingSwiftSample.entitlements; sourceTree = "<group>"; };
+		C57DAB5B27A13F3F002D32F4 /* UIViewController+NotificationCenter.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "UIViewController+NotificationCenter.swift"; sourceTree = "<group>"; };
+		C57DAB5D27A13F3F002D32F4 /* NotificationService.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NotificationService.swift; sourceTree = "<group>"; };
+		C57DAB5E27A13F3F002D32F4 /* PushNotificationManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PushNotificationManager.swift; sourceTree = "<group>"; };
+		C57DAB5F27A13F3F002D32F4 /* NotificationMessage.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NotificationMessage.swift; sourceTree = "<group>"; };
+		C57DAB6527A14418002D32F4 /*  Notification+Name.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = " Notification+Name.swift"; sourceTree = "<group>"; };
 		C5CB4586278CCC0300521130 /* Notification+Name.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Notification+Name.swift"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -75,6 +85,7 @@
 		C534E6B3278CA6FE00010C0B /* FirebaseMessagingSwiftSample */ = {
 			isa = PBXGroup;
 			children = (
+				C57DAB5A27A13F27002D32F4 /* PushNotification */,
 				C534E6DB278CA8B700010C0B /* FirebaseMessagingSwiftSample.entitlements */,
 				C534E6B4278CA6FE00010C0B /* AppDelegate.swift */,
 				C534E6BA278CA6FE00010C0B /* Main.storyboard */,
@@ -85,6 +96,18 @@
 				C534E6C2278CA6FF00010C0B /* Info.plist */,
 			);
 			path = FirebaseMessagingSwiftSample;
+			sourceTree = "<group>";
+		};
+		C57DAB5A27A13F27002D32F4 /* PushNotification */ = {
+			isa = PBXGroup;
+			children = (
+				C57DAB5F27A13F3F002D32F4 /* NotificationMessage.swift */,
+				C57DAB5D27A13F3F002D32F4 /* NotificationService.swift */,
+				C57DAB5E27A13F3F002D32F4 /* PushNotificationManager.swift */,
+				C57DAB5B27A13F3F002D32F4 /* UIViewController+NotificationCenter.swift */,
+				C57DAB6527A14418002D32F4 /*  Notification+Name.swift */,
+			);
+			path = PushNotification;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -172,8 +195,13 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				C57DAB6427A13F3F002D32F4 /* NotificationMessage.swift in Sources */,
+				C57DAB6327A13F3F002D32F4 /* PushNotificationManager.swift in Sources */,
+				C57DAB6027A13F3F002D32F4 /* UIViewController+NotificationCenter.swift in Sources */,
 				C534E6B9278CA6FE00010C0B /* ViewController.swift in Sources */,
 				C534E6B5278CA6FE00010C0B /* AppDelegate.swift in Sources */,
+				C57DAB6227A13F3F002D32F4 /* NotificationService.swift in Sources */,
+				C57DAB6627A14418002D32F4 /*  Notification+Name.swift in Sources */,
 				C5CB4587278CCC0300521130 /* Notification+Name.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
